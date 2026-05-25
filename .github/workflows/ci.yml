@@ -33,7 +33,7 @@ jobs:
           cache-dependency-path: frontend/package-lock.json
       - run: npm install
       - run: npm audit --audit-level=high
-      - run: NEXT_TELEMETRY_DISABLED=1 npx next build
+      - run: npm run build
   static-deployment-checks:
     runs-on: ubuntu-latest
     steps:

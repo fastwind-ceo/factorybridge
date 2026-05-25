@@ -20,6 +20,7 @@ class Company(UUIDPrimaryKeyMixin, TimestampMixin, Base):
     verification_status: Mapped[str] = mapped_column(String(40), default="NEW", index=True, nullable=False)
 
     members: Mapped[list["CompanyMember"]] = relationship(back_populates="company", cascade="all, delete-orphan")
+    supplier_profile: Mapped["SupplierProfile | None"] = relationship(back_populates="company", cascade="all, delete-orphan")
 
 
 class CompanyMember(UUIDPrimaryKeyMixin, Base):

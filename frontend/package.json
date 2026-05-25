@@ -1,21 +1,26 @@
 {
   "name": "factorybridge-frontend",
-  "version": "0.20.0",
+  "version": "0.19.3-retest-hardening",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev -H 0.0.0.0 -p 3000",
     "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
+    "start": "next start -H 0.0.0.0 -p 3000",
+    "lint": "next lint",
+    "smoke:customer": "python ../scripts/smoke_frontend_customer_portal.py",
+    "smoke:supplier": "python ../scripts/smoke_frontend_supplier_portal.py",
+    "smoke:admin": "python ../scripts/smoke_frontend_admin_operator_panel.py"
   },
   "dependencies": {
-    "@types/node": "20.12.12",
-    "@types/react": "18.3.3",
-    "@types/react-dom": "18.3.0",
-    "next": "14.2.29",
-    "react": "18.3.1",
-    "react-dom": "18.3.1",
-    "typescript": "5.4.5"
+    "@types/node": "^22.15.18",
+    "@types/react": "^19.1.3",
+    "@types/react-dom": "^19.1.3",
+    "next": "^15.3.2",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "typescript": "^5.8.3"
   },
-  "devDependencies": {}
+  "overrides": {
+    "postcss": "^8.5.10"
+  }
 }

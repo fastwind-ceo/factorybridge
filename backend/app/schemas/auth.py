@@ -1,6 +1,6 @@
 from pydantic import BaseModel, EmailStr, Field
 
-from app.models.enums import CompanyType
+from app.models.enums import CompanyType, UserRole
 
 
 class RegisterRequest(BaseModel):
@@ -17,10 +17,14 @@ class LoginRequest(BaseModel):
     password: str
 
 
+class RefreshRequest(BaseModel):
+    refresh_token: str
+
+
 class TokenUser(BaseModel):
     id: str
     email: EmailStr
-    roles: list[str]
+    roles: list[UserRole]
 
 
 class TokenResponse(BaseModel):
@@ -28,3 +32,18 @@ class TokenResponse(BaseModel):
     refresh_token: str
     token_type: str = "bearer"
     user: TokenUser
+
+
+class CompanySummary(BaseModel):
+    id: str
+    name: str
+    company_type: str
+
+
+class MeResponse(BaseModel):
+    id: str
+    email: EmailStr
+    first_name: str | None
+    last_name: str | None
+    roles: list[str]
+    companies: list[CompanySummary]

@@ -2,7 +2,7 @@ import base64
 import hashlib
 import hmac
 import json
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timezone, timedelta, timezone
 from typing import Any
 
 from app.core.config import settings
@@ -35,12 +35,18 @@ def encode_token(payload: dict[str, Any]) -> str:
 
 
 def decode_token(token: str) -> dict[str, Any]:
-    header_part, payload_part, signature = token.split(".")
+    try:
+        header_part, payload_part, signature = token.split(".")
+    except ValueError as exc:
+        raise TokenError("Invalid token format") from exc
     signing_input = f"{header_part}.{payload_part}"
     expected_signature = _sign(signing_input)
     if not hmac.compare_digest(signature, expected_signature):
         raise TokenError("Invalid token signature")
-    payload = json.loads(_b64url_decode(payload_part))
+    try:
+        payload = json.loads(_b64url_decode(payload_part))
+    except Exception as exc:
+        raise TokenError("Invalid token payload") from exc
     exp = payload.get("exp")
     if not isinstance(exp, int) or exp < int(datetime.now(timezone.utc).timestamp()):
         raise TokenError("Token expired")
@@ -55,5 +61,16 @@ def create_access_token(subject: str, roles: list[str]) -> str:
         "type": "access",
         "iat": int(now.timestamp()),
         "exp": int((now + timedelta(minutes=settings.jwt_access_token_expire_minutes)).timestamp()),
+    }
+    return encode_token(payload)
+
+
+def create_refresh_token(subject: str) -> str:
+    now = datetime.now(timezone.utc)
+    payload: dict[str, Any] = {
+        "sub": subject,
+        "type": "refresh",
+        "iat": int(now.timestamp()),
+        "exp": int((now + timedelta(days=settings.jwt_refresh_token_expire_days)).timestamp()),
     }
     return encode_token(payload)

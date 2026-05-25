@@ -1,0 +1,7 @@
+STEP 013 verification evidence
+
+Frontend smoke:
+STEP 013 frontend customer portal smoke test passed
+
+Backend regression tests:
+33 passed

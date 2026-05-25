@@ -8,11 +8,13 @@ if str(BACKEND) not in sys.path:
 
 from fastapi.testclient import TestClient
 
+from app.db.init_db import init_db
 from app.main import app
 
+init_db()
 client = TestClient(app)
 response = client.get("/api/v1/health")
 print(response.status_code)
 print(response.json())
 assert response.status_code == 200
-assert response.json()["status"] in {"ok", "degraded"}
+assert response.json()["database"] == "ok"

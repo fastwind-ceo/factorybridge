@@ -1,0 +1,29 @@
+{
+  "project_name": "FactoryBridge by Fast Wind",
+  "version": "0.19.3-retest-hardening",
+  "active_step": "STEP_019_PILOT_LAUNCH_PACKAGE",
+  "status": "MVP_READY_FOR_DOCKER_DEPLOYMENT_VERIFICATION",
+  "backend_tests": "36 passed",
+  "smoke_tests": [
+    "smoke_backend",
+    "smoke_auth",
+    "smoke_supplier",
+    "smoke_rfq",
+    "smoke_files",
+    "smoke_ai",
+    "smoke_tender",
+    "smoke_quote",
+    "smoke_landed_cost",
+    "smoke_notifications",
+    "smoke_full_workflow",
+    "smoke_frontend_customer_portal",
+    "smoke_frontend_supplier_portal",
+    "smoke_frontend_admin_operator_panel",
+    "smoke_frontend_full_workflow"
+  ],
+  "next_step": "STEP_019_PILOT_LAUNCH_PACKAGE_FINAL_ARCHIVE",
+  "last_updated": "2026-05-24",
+  "updated_at": "2026-05-25T00:00:00+02:00",
+  "release_archive": "FactoryBridge_STEP_019_Pilot_Launch_Package_Final_MVP_v0_19_0.zip",
+  "latest_retest_report": "docs/FULL_RETEST_REPORT_STEP_019_3.md"
+}

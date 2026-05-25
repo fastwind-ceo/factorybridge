@@ -1,4 +1,4 @@
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timezone
 from uuid import uuid4
 
 from sqlalchemy import DateTime, MetaData

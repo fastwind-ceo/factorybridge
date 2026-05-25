@@ -1,19 +1,18 @@
-# GitHub Secrets Template
+# FactoryBridge GitHub Secrets Template
 
-Configure the following repository secrets before enabling automated deployment.
+Required GitHub Actions secrets:
 
-## Required secrets
+```text
+VPS_HOST=<server-ip>
+VPS_USER=<ssh-user>
+VPS_APP_DIR=/opt/factorybridge
+VPS_SSH_KEY=<private-key-content>
+```
 
-- `VPS_HOST`
-- `VPS_USER`
-- `VPS_SSH_KEY`
-- `DEPLOY_PATH`
-- `BACKEND_ENV`
-- `FRONTEND_ENV`
-- `POSTGRES_ENV`
+Generate a deploy key:
 
-## Notes
+```bash
+ssh-keygen -t ed25519 -C "factorybridge-github-actions" -f factorybridge_github_actions
+```
 
-- Use a dedicated deployment SSH key.
-- Never expose production secrets publicly.
-- Prefer separate staging and production environments.
+Add `.pub` content to VPS `~/.ssh/authorized_keys`; add private key content to `VPS_SSH_KEY`.

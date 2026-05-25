@@ -1,0 +1,62 @@
+name: factorybridge-staging
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: factorybridge_staging
+      POSTGRES_USER: factorybridge
+      POSTGRES_PASSWORD: factorybridge-staging-password
+    volumes:
+      - postgres_staging_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U factorybridge -d factorybridge_staging"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks: [internal]
+
+  redis:
+    image: redis:7-alpine
+    networks: [internal]
+
+  backend:
+    build:
+      context: ../backend
+      dockerfile: Dockerfile.prod
+    environment:
+      APP_ENV: staging
+      DATABASE_URL: postgresql+psycopg://factorybridge:factorybridge-staging-password@postgres:5432/factorybridge_staging
+      REDIS_URL: redis://redis:6379/0
+      SECRET_KEY: staging-secret-change-me
+      BACKEND_CORS_ORIGINS: http://localhost:3000,http://localhost
+      STORAGE_BACKEND: local
+      LOCAL_STORAGE_PATH: /app/storage
+    volumes:
+      - backend_staging_storage:/app/storage
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks: [internal]
+
+  frontend:
+    build:
+      context: ../frontend
+      dockerfile: Dockerfile.prod
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:8000/api/v1
+      NEXT_PUBLIC_APP_NAME: FactoryBridge Staging
+    ports:
+      - "3000:3000"
+    depends_on: [backend]
+    networks: [internal]
+
+volumes:
+  postgres_staging_data:
+  backend_staging_storage:
+
+networks:
+  internal:
+    driver: bridge

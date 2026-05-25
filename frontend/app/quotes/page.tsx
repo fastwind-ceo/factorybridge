@@ -1,0 +1,3 @@
+import { AppShell } from '@/components/AppShell';
+import { quoteRows } from '@/lib/mockData';
+export default function QuotesPage() { return <AppShell><div className="kicker">Quotes</div><h1>Supplier offers</h1><div className="card"><table className="table"><thead><tr><th>Supplier</th><th>Unit price</th><th>MOQ</th><th>Lead time</th><th>Landed cost</th><th>Recommendation</th></tr></thead><tbody>{quoteRows.map((q, i) => <tr key={q.supplier}><td><strong>{q.supplier}</strong></td><td>{q.unit}</td><td>{q.moq}</td><td>{q.lead}</td><td>{q.landed}</td><td>{i === 0 ? <span className="badge green">Best balance</span> : <span className="badge">Backup</span>}</td></tr>)}</tbody></table></div></AppShell>; }

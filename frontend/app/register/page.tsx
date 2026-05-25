@@ -1,21 +1,4 @@
+import Link from 'next/link';
 export default function RegisterPage() {
-  return (
-    <main className="container">
-      <div className="card" style={{ maxWidth: 640, margin: '40px auto' }}>
-        <h1>Create account</h1>
-        <p className="muted">Register as customer or supplier company.</p>
-
-        <div className="grid" style={{ marginTop: 24 }}>
-          <input className="input" placeholder="Company name" />
-          <select className="input" defaultValue="CUSTOMER">
-            <option value="CUSTOMER">Customer</option>
-            <option value="SUPPLIER">Supplier</option>
-          </select>
-          <input className="input" placeholder="Email" type="email" />
-          <input className="input" placeholder="Password" type="password" />
-          <button className="button">Create account</button>
-        </div>
-      </div>
-    </main>
-  )
+  return <main className="page" style={{ display: 'grid', placeItems: 'center', padding: 24 }}><div className="card" style={{ width: '100%', maxWidth: 620 }}><div className="kicker">FactoryBridge onboarding</div><h1>Create account</h1><div className="grid grid-2"><div className="field"><span className="label">Company type</span><select className="select"><option>Customer</option><option>Supplier</option></select></div><div className="field"><span className="label">Company name</span><input className="input" placeholder="Example LLC" /></div><div className="field"><span className="label">Email</span><input className="input" placeholder="name@company.com" /></div><div className="field"><span className="label">Password</span><input className="input" type="password" /></div></div><div style={{ marginTop: 18 }}><Link className="btn" href="/dashboard">Create and continue</Link></div></div></main>;
 }

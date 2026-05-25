@@ -14,7 +14,7 @@ def health_check():
         with SessionLocal() as db:
             db.execute(text("SELECT 1"))
         database_status = "ok"
-    except Exception as exc:
+    except Exception as exc:  # pragma: no cover - specific DB backend errors vary
         database_status = f"error: {exc.__class__.__name__}"
 
     return {

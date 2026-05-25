@@ -1,40 +1,66 @@
-# FactoryBridge by Fast Wind
+# FactoryBridge by Fast Wind — STEP 016
 
-AI-assisted industrial RFQ and manufacturing tender platform connecting customers with verified Chinese manufacturing suppliers.
+## Step title
+Full Workflow Integration
 
-## Current release
+## Result
+This archive contains the FactoryBridge project updated through STEP 016.
 
-MVP version: `v0.20.0 GitHub CI/CD Ready`
+Implemented in this step:
 
-## Core capabilities
+- end-to-end backend integration test covering customer → AI → operator → supplier → quote → landed cost → order;
+- full workflow smoke script: `scripts/smoke_full_workflow.py`;
+- operator-accessible audit API endpoint: `/api/v1/admin/audit/logs`;
+- frontend workflow overview page: `/workflow`;
+- frontend workflow smoke test: `scripts/smoke_frontend_full_workflow.py`;
+- documentation and ProjectCapsule evidence updated;
+- all backend and frontend functionality from STEP 001–015 preserved.
 
-- Customer RFQ intake and RFQ wizard
-- Technical, commercial and logistics specification structure
-- Supplier profiles and manufacturing capabilities
-- Tender invitations and supplier quote flow
-- AI-assisted RFQ completeness review and process classification
-- Quote comparison and landed cost calculation
-- Orders MVP workflow
-- Notifications and audit trail
-- Docker/Nginx production deployment layer
-- GitHub CI/CD workflow templates
+## Verification
 
-## Repository layout
+Performed checks:
 
-```text
-backend/       FastAPI backend
-frontend/      Next.js frontend
-infra/         Docker, Nginx, env and deployment files
-docs/          Project, deployment and pilot documentation
-scripts/       Smoke, release and GitHub helper scripts
-demo_data/     Demo launch data and examples
-projectcapsule/ ProjectCapsule and release evidence
+```bash
+cd backend && PYTHONPATH=. pytest -q
+PYTHONPATH=backend python scripts/smoke_full_workflow.py
+PYTHONPATH=backend python scripts/smoke_frontend_full_workflow.py
 ```
 
-## Status
+Result:
 
-`MVP_READY_FOR_PILOT`
+```text
+34 passed
+STEP 016 smoke full workflow OK
+STEP 016 smoke frontend workflow OK
+```
 
-## Next stage
+## Next step
+STEP 017 — Testing, Security & Hardening.
 
-Public test deployment on VPS with Docker Compose, Nginx and SSL.
+## STEP 018 Production Deployment
+
+Production deployment assets are now included:
+
+- `infra/docker-compose.prod.yml`
+- `infra/nginx/factorybridge.prod.conf`
+- `infra/env/*.example`
+- `infra/scripts/deploy_prod.sh`
+- `infra/scripts/backup_postgres.sh`
+- `docs/DEPLOYMENT_GUIDE.md`
+
+Run local structural verification:
+
+```bash
+python scripts/smoke_production_files.py
+```
+
+## GitHub CI/CD
+
+Added GitHub-ready automation:
+
+- `.github/workflows/ci.yml` — backend tests, frontend build, deployment file checks.
+- `.github/workflows/deploy-vps.yml` — deploy to VPS over SSH.
+- `scripts/github/server_bootstrap_ubuntu.sh` — prepares Ubuntu VPS.
+- `scripts/github/deploy_from_git.sh` — deploy script executed on server.
+- `docs/github/GITHUB_DEPLOYMENT_GUIDE.md` — GitHub deployment guide.
+- `docs/github/GITHUB_SECRETS_TEMPLATE.md` — required secrets.

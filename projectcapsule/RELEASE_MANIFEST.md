@@ -6,29 +6,42 @@ FactoryBridge by Fast Wind
 
 ## Status
 
-MVP_READY_FOR_PILOT
+CI_READY_FOR_DEPLOYMENT
 
-## Current repository state
+## Confirmed repository state
 
-- Backend foundation imported
-- Frontend foundation imported
-- Auth and role model foundation imported
-- RFQ workflow pages imported
-- Supplier and admin dashboards imported
-- CI workflow imported
-- Smoke tests imported
-- Deployment documentation imported
-- Production environment templates imported
+- Full project imported into GitHub
+- Backend tests pass in GitHub Actions
+- Frontend build passes in GitHub Actions
+- Static deployment checks pass in GitHub Actions
+- GitHub CI pipeline is operational
+- Deployment workflow is present
+- Production environment templates are present
+- Deployment documentation is present
+- ProjectCapsule release manifest is present
 
-## Remaining expansion layers
+## Current milestone result
 
-- Full backend domain modules
-- Full frontend workflow integration
-- Docker/Nginx runtime configs
-- Complete automated deployment workflow
-- Extended test coverage
-- AI manufacturing analysis modules
+FactoryBridge has reached a stable GitHub CI-ready state. The repository can now be used as the source for VPS deployment and live pilot preparation.
 
-## Target next milestone
+## Next milestone
 
 Public VPS deployment and live pilot environment.
+
+## Required before live deployment
+
+- VPS host
+- VPS user
+- SSH deployment key
+- GitHub repository secrets
+- Domain or temporary server IP access
+- Production environment values
+- SSL configuration if domain is available
+
+## Remaining expansion layers after first live launch
+
+- Extended backend domain modules
+- Extended frontend workflow integration
+- AI manufacturing analysis modules
+- Monitoring and backup automation
+- Pilot user onboarding scripts

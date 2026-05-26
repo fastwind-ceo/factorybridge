@@ -12,13 +12,20 @@ Usage from repository root:
 
 from __future__ import annotations
 
+import sys
+from pathlib import Path
+
+BACKEND_DIR = Path(__file__).resolve().parents[1]
+if str(BACKEND_DIR) not in sys.path:
+    sys.path.insert(0, str(BACKEND_DIR))
+
 from sqlalchemy import select
 
 from app.db.base import Base
 from app.db.session import SessionLocal, engine
 from app.models import *  # noqa: F401,F403 - required so SQLAlchemy registers all models
 from app.models.enums import CompanyType, UserRole
-from app.models.user import User, UserRoleModel
+from app.models.user import User
 from app.schemas.auth import RegisterRequest
 from app.services.auth_service import ensure_role, register_user_with_company
 

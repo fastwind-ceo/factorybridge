@@ -25,6 +25,12 @@ const roleRedirect: Record<PortalRole, string> = {
   operator: '/admin',
 };
 
+const demoEmails: Record<PortalRole, string> = {
+  customer: 'customer@factorybridge.demo',
+  supplier: 'supplier@factorybridge.demo',
+  operator: 'admin@factorybridge.demo',
+};
+
 function saveAuthSession(payload: TokenResponse) {
   window.localStorage.setItem('factorybridge.access_token', payload.access_token);
   window.localStorage.setItem('factorybridge.refresh_token', payload.refresh_token);
@@ -60,10 +66,17 @@ function getErrorMessage(error: unknown) {
 export default function LoginPage() {
   const router = useRouter();
   const [role, setRole] = useState<PortalRole>('customer');
-  const [email, setEmail] = useState('customer@factorybridge.demo');
-  const [password, setPassword] = useState('FactoryBridge2026!');
+  const [email, setEmail] = useState(demoEmails.customer);
+  const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  function chooseDemoRole(nextRole: PortalRole) {
+    setRole(nextRole);
+    setEmail(demoEmails[nextRole]);
+    setPassword('');
+    setError(null);
+  }
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -98,7 +111,7 @@ export default function LoginPage() {
           <form className="form" style={{ marginTop: 18 }} onSubmit={handleSubmit}>
             <div className="field">
               <span className="label">Preferred portal</span>
-              <select className="select" value={role} onChange={(event) => setRole(event.target.value as PortalRole)}>
+              <select className="select" value={role} onChange={(event) => chooseDemoRole(event.target.value as PortalRole)}>
                 <option value="customer">Customer</option>
                 <option value="supplier">Supplier</option>
                 <option value="operator">Operator/Admin</option>
@@ -112,7 +125,7 @@ export default function LoginPage() {
 
             <div className="field">
               <span className="label">Password</span>
-              <input className="input" type="password" value={password} onChange={(event) => setPassword(event.target.value)} required />
+              <input className="input" type="password" value={password} onChange={(event) => setPassword(event.target.value)} required autoComplete="current-password" />
             </div>
 
             {error ? (
@@ -121,6 +134,12 @@ export default function LoginPage() {
               </div>
             ) : null}
 
+            <div className="grid grid-3">
+              <button type="button" className="btn" onClick={() => chooseDemoRole('customer')}>Customer demo</button>
+              <button type="button" className="btn secondary" onClick={() => chooseDemoRole('supplier')}>Supplier demo</button>
+              <button type="button" className="btn ghost" onClick={() => chooseDemoRole('operator')}>Admin demo</button>
+            </div>
+
             <button className="btn" type="submit" disabled={isSubmitting}>
               {isSubmitting ? 'Signing in...' : `Sign in to ${role}`}
             </button>
@@ -128,10 +147,7 @@ export default function LoginPage() {
 
           <div className="card" style={{ marginTop: 18, background: '#f8fafc' }}>
             <strong>Demo accounts</strong>
-            <p style={{ margin: '8px 0 0' }}>customer@factorybridge.demo / FactoryBridge2026!</p>
-            <p style={{ margin: '4px 0 0' }}>supplier@factorybridge.demo / FactoryBridge2026!</p>
-            <p style={{ margin: '4px 0 0' }}>operator@factorybridge.demo / FactoryBridge2026!</p>
-            <p style={{ margin: '4px 0 0' }}>admin@factorybridge.demo / FactoryBridge2026!</p>
+            <p style={{ margin: '8px 0 0' }}>Use a demo email button above and enter the staging demo password from the deployment checklist.</p>
           </div>
 
           <p style={{ marginTop: 18 }}>

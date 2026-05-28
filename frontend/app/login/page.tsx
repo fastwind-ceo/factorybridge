@@ -19,6 +19,12 @@ type TokenResponse = {
   };
 };
 
+type ApiResponse<T> = {
+  success: boolean;
+  data: T;
+  message?: string | null;
+};
+
 const roleRedirect: Record<PortalRole, string> = {
   customer: '/customer',
   supplier: '/supplier',
@@ -35,6 +41,13 @@ function saveAuthSession(payload: TokenResponse) {
   window.localStorage.setItem('factorybridge.access_token', payload.access_token);
   window.localStorage.setItem('factorybridge.refresh_token', payload.refresh_token);
   window.localStorage.setItem('factorybridge.user', JSON.stringify(payload.user));
+}
+
+function unwrapApiData<T>(response: ApiResponse<T>): T {
+  if (!response.success || !response.data) {
+    throw new Error(response.message || 'Backend returned an unsuccessful response');
+  }
+  return response.data;
 }
 
 function preferredRoleFromToken(payload: TokenResponse, selectedRole: PortalRole): PortalRole {
@@ -84,7 +97,8 @@ export default function LoginPage() {
     setIsSubmitting(true);
 
     try {
-      const payload = await apiPost<TokenResponse>('/auth/login', { email, password });
+      const response = await apiPost<ApiResponse<TokenResponse>>('/auth/login', { email, password });
+      const payload = unwrapApiData(response);
       saveAuthSession(payload);
       const targetRole = preferredRoleFromToken(payload, role);
       router.push(roleRedirect[targetRole]);

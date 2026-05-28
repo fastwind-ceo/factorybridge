@@ -7,22 +7,20 @@ import { apiPost } from '@/lib/api';
 
 type PortalRole = 'customer' | 'supplier' | 'operator';
 
-type TokenResponse = {
-  access_token: string;
-  refresh_token: string;
-  token_type: string;
-  user: {
-    id: string;
+type RegisterResponse = {
+  success: boolean;
+  data: {
+    user_id: string;
+    company_id: string;
     email: string;
-    roles: string[];
   };
+  message?: string | null;
 };
 
-const roleConfig: Record<PortalRole, { label: string; companyType: string; redirect: string; badgeClass: string; title: string; description: string }> = {
+const roleConfig: Record<PortalRole, { label: string; companyType: string; badgeClass: string; title: string; description: string }> = {
   customer: {
     label: 'Customer / Buyer',
     companyType: 'CUSTOMER',
-    redirect: '/customer',
     badgeClass: 'badge',
     title: 'Request production',
     description: 'Create RFQs and compare supplier quotes.',
@@ -30,7 +28,6 @@ const roleConfig: Record<PortalRole, { label: string; companyType: string; redir
   supplier: {
     label: 'Supplier / Factory',
     companyType: 'SUPPLIER',
-    redirect: '/supplier',
     badgeClass: 'badge green',
     title: 'Join tenders',
     description: 'Receive RFQs and submit structured quotations.',
@@ -38,18 +35,11 @@ const roleConfig: Record<PortalRole, { label: string; companyType: string; redir
   operator: {
     label: 'Operator / Platform team',
     companyType: 'PLATFORM_OPERATOR',
-    redirect: '/operator',
     badgeClass: 'badge amber',
     title: 'Manage platform',
     description: 'Moderate RFQs, suppliers and commercial readiness.',
   },
 };
-
-function saveAuthSession(payload: TokenResponse) {
-  window.localStorage.setItem('factorybridge.access_token', payload.access_token);
-  window.localStorage.setItem('factorybridge.refresh_token', payload.refresh_token);
-  window.localStorage.setItem('factorybridge.user', JSON.stringify(payload.user));
-}
 
 function getErrorMessage(error: unknown) {
   return error instanceof Error ? error.message : 'Unexpected authentication error';
@@ -62,23 +52,32 @@ export default function RegisterPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setError(null);
+    setSuccess(null);
     setIsSubmitting(true);
 
     try {
-      const payload = await apiPost<TokenResponse>('/auth/register', {
+      const response = await apiPost<RegisterResponse>('/auth/register', {
         email,
         password,
         company_name: companyName,
         company_type: roleConfig[role].companyType,
       });
 
-      saveAuthSession(payload);
-      router.push(roleConfig[role].redirect);
+      if (!response.success) {
+        throw new Error(response.message || 'Registration failed');
+      }
+
+      setSuccess('Account created successfully. Please sign in using your new credentials.');
+
+      setTimeout(() => {
+        router.push('/login');
+      }, 1200);
     } catch (err) {
       setError(getErrorMessage(err));
     } finally {
@@ -95,7 +94,7 @@ export default function RegisterPage() {
           <div className="kicker">FactoryBridge onboarding</div>
           <h1>Create account</h1>
           <p>
-            Choose a role, create your account and continue to the matching workspace. The selected role now controls the backend registration payload and redirect.
+            Choose a role and create your account. Registration now uses the live backend API and redirects to sign-in after successful onboarding.
           </p>
 
           <form className="form" style={{ marginTop: 18 }} onSubmit={handleSubmit}>
@@ -128,6 +127,12 @@ export default function RegisterPage() {
             {error ? (
               <div className="card" style={{ marginTop: 18, borderColor: '#fecaca', color: '#991b1b' }}>
                 {error}
+              </div>
+            ) : null}
+
+            {success ? (
+              <div className="card" style={{ marginTop: 18, borderColor: '#86efac', color: '#166534' }}>
+                {success}
               </div>
             ) : null}
 

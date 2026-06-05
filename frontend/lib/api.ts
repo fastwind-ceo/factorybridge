@@ -1,6 +1,20 @@
+function trimTrailingSlash(value: string): string {
+  return value.replace(/\/+$/, '');
+}
+
+function withApiPrefix(value: string): string {
+  const normalized = trimTrailingSlash(value.trim());
+  if (normalized.endsWith('/api/v1')) {
+    return normalized;
+  }
+  return `${normalized}/api/v1`;
+}
+
 export function getApiBaseUrl(): string {
-  if (process.env.NEXT_PUBLIC_API_URL) {
-    return process.env.NEXT_PUBLIC_API_URL;
+  const configuredUrl = process.env.NEXT_PUBLIC_API_URL || process.env.NEXT_PUBLIC_API_BASE_URL;
+
+  if (configuredUrl && configuredUrl.trim()) {
+    return withApiPrefix(configuredUrl);
   }
 
   if (typeof window !== 'undefined') {
@@ -49,14 +63,24 @@ async function parseApiResponse<T>(response: Response, path: string): Promise<T>
 }
 
 export async function apiRequest<T>(method: ApiMethod, path: string, body?: unknown, token?: string): Promise<T> {
-  const response = await fetch(`${getApiBaseUrl()}${path}`, {
-    method,
-    headers: buildHeaders(token),
-    body: body === undefined ? undefined : JSON.stringify(body),
-    cache: 'no-store',
-  });
+  const apiBaseUrl = getApiBaseUrl();
+  const url = `${apiBaseUrl}${path}`;
 
-  return parseApiResponse<T>(response, path);
+  try {
+    const response = await fetch(url, {
+      method,
+      headers: buildHeaders(token),
+      body: body === undefined ? undefined : JSON.stringify(body),
+      cache: 'no-store',
+    });
+
+    return parseApiResponse<T>(response, path);
+  } catch (error) {
+    if (error instanceof TypeError) {
+      throw new Error(`Cannot reach FactoryBridge API at ${apiBaseUrl}. Check backend, port 8000, firewall, and CORS.`);
+    }
+    throw error;
+  }
 }
 
 export async function apiGet<T>(path: string, token?: string): Promise<T> {
